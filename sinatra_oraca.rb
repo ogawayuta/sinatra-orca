@@ -11,8 +11,11 @@ require 'sinatra'
 require 'haml'
 require 'orca_api'
 
+<<<<<<< HEAD
 enable :sessions
 
+=======
+>>>>>>> 5627c082e56d8e455577e4c645b125a0119fb8eb
 set :bind, '0.0.0.0'
 set :public_folder, File.dirname(__FILE__) + '/static'
 
@@ -25,6 +28,7 @@ opt = {
   :passwd => "ormaster123"
 }
 
+<<<<<<< HEAD
 helpers do
   def check_login
     unless session[:login]
@@ -55,21 +59,33 @@ get '/logout' do
 end
 get '/' do
   check_login
+=======
+get '/' do
+>>>>>>> 5627c082e56d8e455577e4c645b125a0119fb8eb
   @patients = list_patients(opt)
   haml :index
 end
 
 get '/register' do
+<<<<<<< HEAD
   check_login
+=======
+>>>>>>> 5627c082e56d8e455577e4c645b125a0119fb8eb
   haml :register
 end
 
 post '/register' do
+<<<<<<< HEAD
   check_login
   @patient = params 
   @id,@error = register_patient(opt,@patient)
   if @error
     session['message'] = @error
+=======
+  @patient = params 
+  @id,@error = register_patient(opt,@patient)
+  if @error
+>>>>>>> 5627c082e56d8e455577e4c645b125a0119fb8eb
     haml :register
   else
     haml :register_result
@@ -77,16 +93,24 @@ post '/register' do
 end
 
 get '/delete' do
+<<<<<<< HEAD
   check_login
+=======
+>>>>>>> 5627c082e56d8e455577e4c645b125a0119fb8eb
   pp params
   @patient = params
   haml :delete
 end
 
 post '/delete' do
+<<<<<<< HEAD
   check_login
   @params = params 
   @id,@error = delete_patient(opt,@params)
   session['message'] = @error
+=======
+  @params = params 
+  @id,@error = delete_patient(opt,@params)
+>>>>>>> 5627c082e56d8e455577e4c645b125a0119fb8eb
   redirect to '/'
 end
