@@ -3,19 +3,14 @@
   %body
     %h2 日レセ患者API
     %div
-<<<<<<< HEAD
       - if session['message']
         %p= session['massage']
         - session['message'] = nil
     %div
       %a{:href => "register"}新規登録
       %a{:href => "/logout"}ログアウト
-=======
-      - if @error
-        %p= @error
-    %div
-      %a{:href => "register"}新規登録
->>>>>>> 5627c082e56d8e455577e4c645b125a0119fb8eb
+      - if session['message']
+        %p= session['message']
     %div
       %table
         %tr
