@@ -1,0 +1,21 @@
+%html
+  %head
+    %meta{:charset => "UTF-8"}
+    %link{:rel => "stylesheet", |
+          :type => "text/css", |
+          :href => "style.css"}
+  %body
+    %h2 氏名検索
+    %div{:class => "top_menu"}
+      %a{:href => "/"}戻る
+      %a{:href => "/logout"}ログアウト
+    - if session['message']
+      %div{:class => "message"}
+        %p= session['message']
+        - session['message'] = nil
+    %div
+      %form{:action => "/search",:method => "post"}
+        %div
+        %p 氏名
+        %input{:type => "text",:name => "search_name"}
+        %input{:type => "submit"}

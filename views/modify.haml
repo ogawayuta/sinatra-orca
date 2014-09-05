@@ -1,3 +1,6 @@
+-  @patient ||= {}
+-  @patient['whole_name'] ||= "性　名"
+-  @patient['whole_name_kana'] ||= "セイ　メイ"
 %html
   %head
     %meta{:charset => "UTF-8"}
@@ -5,10 +8,14 @@
           :type => "text/css", |
           :href => "style.css"}
   %body
-    %h2 患者削除結果
+    %h2 患者情報更新
     %div{:class => "top_menu"}
       %a{:href => "/"}戻る
       %a{:href => "/logout"}ログアウト
+    - if session['message']
+      %div{:class => "message"}
+        %p= session['message']
+        - session['message'] = nil
     %div
       %p= "患者ID:#{@patient['id']}"
       %p= "氏名:#{@patient['whole_name']}"
@@ -16,19 +23,19 @@
       %p="生年月日:#{@patient['birth_date']}"
       %p="性別:#{@patient['sex'] == "1" ? "男":"女"}"
     %div
-      %form{:action => '/delete',:method => 'post'}
+      %form{:action => "/modify",:method => "post"}
         %input{:type => "text", |
                :name => 'id', |
                :value => "#{@patient['id']}", |
                :hidden => "true"}
-        %input{:type => "text", |
-               :name => 'whole_name', |
-               :value => "#{@patient['whole_name']}", |
-               :hidden => "true"}
-        %input{:type => "text", |
-               :name => 'whole_name_kana', |
-               :value => "#{@patient['whole_name_kana']}", |
-               :hidden => "true"}
+        %p 氏名
+        %input{:type => "text",
+                 :name => "whole_name",
+                 :value => "#{@patient['whole_name']}"}
+        %p カナ氏名
+        %input{:type => "text",
+                 :name => "whole_name_kana",
+                 :value => "#{@patient['whole_name_kana']}"}
         %input{:type => "text", |
                :name => 'birth_date', |
                :value => "#{@patient['birth_date']}", |
@@ -37,4 +44,5 @@
                :name => 'sex', |
                :value => "#{@patient['sex']}", |
                :hidden => "true"}
-        %input{:type => "submit",:value => "削除する"}
+        %div          
+          %input{:type => "submit",:value => "更新する"}

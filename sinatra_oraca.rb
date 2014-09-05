@@ -11,7 +11,7 @@ require 'sinatra'
 require 'haml'
 require 'orca_api'
 
-#use Rack::Protection
+use Rack::Protection
 enable :sessions
 
 set :bind, '0.0.0.0'
@@ -60,12 +60,18 @@ get '/' do
   haml :index
 end
 
-get '/' do
-  @patients = list_patients(opt)
-  haml :index
+get '/search' do
+  check_login
+  haml :search
+end
+
+post '/search' do
+  @patients=search_patients(opt,search_name)
+  check_login
 end
 
 get '/register' do
+  check_login
   haml :register
 end
 
@@ -75,14 +81,25 @@ post '/register' do
   @id,@error = register_patient(opt,@patient)
   if @error
     session['message'] = @error
-  end
-  @patient = params 
-  @id,@error = register_patient(opt,@patient)
-  if @error
     haml :register
   else
     haml :register_result
   end
+end
+
+get '/modify' do
+  check_login
+  pp params
+  @patient = params
+  haml :modify
+end
+
+post '/modify' do
+  check_login
+  @params = params 
+  @id,@error = modify_patient(opt,@params)
+  session['message'] = @error
+  redirect to '/'
 end
 
 get '/delete' do

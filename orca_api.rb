@@ -54,6 +54,35 @@ def list_patients(opt)
   root["xmlio2"]["patientlst1res"]["Patient_Information"]
 end
 
+def search_patients(opt,search_name)
+  url = "/api01rv2/patientlst3v2?class=01"
+  body = <<-EOF
+    <data>
+      <patientlst3req type="record">
+             <WholeName type="string">#{search_name}</WholeName>
+      </patientlst3req>
+    </data>
+  EOF
+
+  ret = post(url,opt,body)
+  if ret.empty?
+    puts "ret empty"
+    return []
+  end
+  unless ret[0] == "200"
+    puts "state code:#{ret[0]}"
+    return []
+  end
+
+  root = Crack::XML.parse(ret[1])
+  result = root["xmlio2"]["patientlst2res"]["Api_Result"]
+  unless result == "00"
+    puts "eroor"
+    return []
+  end
+  root["xmlio2"]["patientlst2res"]["Patient_Information"]
+end
+
 def register_patient(opt,params)
   url = "/orca12/patientmodv2?class=01"
   body = <<-EOF
@@ -102,6 +131,43 @@ def register_patient(opt,params)
   pinfo = root["xmlio2"]["patientmodres"]["Patient_Information"]
   id = pinfo["Patient_ID"]
   [id,nil]
+end
+
+def modify_patient(opt,params)
+  url = "/orca12/patientmodv2?class=02"
+  body = <<-EOF
+  <data>
+  	<patientmodreq type="record">
+  		<Patient_ID type="string">#{params['id']}</Patient_ID>
+  		<WholeName type="string">#{params['whole_name']}</WholeName>
+  		<WholeName_inKana type="string">#{params['whole_name_kana']}</WholeName_inKana>
+  		<BirthDate type="string">#{params['birth_date']}</BirthDate>
+  		<Sex type="string">#{params['sex']}</Sex>
+  	</patientmodreq>
+  </data>
+  EOF
+
+  ret = post(url,opt,body)
+  if ret.empty?
+    puts "ret empty"
+    return [nil,"http post error"]
+  end
+  unless ret[0] == "200"
+    puts "state code:#{ret[0]}"
+    return [nil,"state code:#{ret[0]}"]
+  end
+
+  root = Crack::XML.parse(ret[1])
+  result = root["xmlio2"]["patientmodres"]["Api_Result"]
+  message = root["xmlio2"]["patientmodres"]["Api_Result_Message"]
+  unless result == "00"
+    puts "eroor"
+    return [nil,"result:#{result} message:#{message}"]
+  end
+
+  pinfo = root["xmlio2"]["patientmodres"]["Patient_Information"]
+  id = pinfo["Patient_ID"]
+  [id,"更新しました"]
 end
 
 def delete_patient(opt,params)
