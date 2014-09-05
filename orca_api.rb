@@ -140,3 +140,4 @@ def delete_patient(opt,params)
   id = pinfo["Patient_ID"]
   [id,"削除しました"]
 end
+
